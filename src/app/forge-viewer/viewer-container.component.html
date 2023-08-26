@@ -1,0 +1,48 @@
+<div class="viewerContainer">
+    <horizontal-split-pane 
+            #box1 
+            primary-component-minsize="200"
+            secondary-component-minsize="200"
+            local-storage-key="split-pane" 
+            (on-ended-resizing)="onHChange()">
+        <div class="split-pane-content-primary" #mainContentPane style="height: 100%;">
+            <div class="upper">
+                <!-- Forge viewer -->
+                <forge-viewer 
+                    [filterByURIs]="filterByURIs" 
+                    [urn]="urn" 
+                    (selectedObject)="log($event)"
+                    (selectedURI)="selectionChanged($event)"></forge-viewer>
+            </div>
+        </div>
+        <div class="split-pane-content-secondary" style="height:100%;">
+            <div class="lower">
+                <vertical-split-pane 
+                        primary-component-minsize="35"
+                        secondary-component-minsize="35"
+                        primary-component-initialratio="0.5"
+                        (on-ended-resizing)="onVChange()">
+                    <div class="split-pane-content-primary">
+                        <div class="left">
+                            <!-- Query Field -->
+                            <query-field
+                                [filePaths]="filePaths"
+                                (queryResult)="queryResult = $event"
+                                (returnedURIs)="filterByURIs = $event"
+                                (queryTime)="queryTime = $event"
+                                (queryType)="queryType = $event">
+                            </query-field>
+                        </div>
+                    </div>
+                    <div class="split-pane-content-secondary">
+                        <div class="right">
+                            <!-- Query Results -->
+                            <query-result-table *ngIf="queryType == 'select' && queryResult" [queryResult]="queryResult" [queryTime]="queryTime"></query-result-table>
+                            <query-result-graph *ngIf="queryType == 'construct' && queryResult" [data]="queryResult" [height]="400" [queryTime]="queryTime"></query-result-graph>
+                        </div>
+                    </div>
+                </vertical-split-pane>
+            </div>
+        </div>
+    </horizontal-split-pane>
+</div>
